@@ -1,0 +1,18 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 80, 'nodeSpacing': 40 }}}%%
+flowchart TD
+  START[Trigger<br>Lead Classified as Cold]:::trigger --> N1[Enroll in Nurture Campaign<br>Email/SMS drip series]:::integration
+  N1 --> N2[Send Nurture Message 1]:::ai --> DB1[Save Message in DB]:::db
+  N2 --> N3[Wait 1 week]:::wait
+  N3 --> N4[Send Nurture Message 2 + Offer]:::ai --> DB2[Save Message in DB]:::db
+  N4 --> N5[Wait 1 week]:::wait
+  N5 --> N6[Send Nurture Message 3 + Discount]:::ai --> DB3[Save Message in DB]:::db
+  N6 --> N7[Check for Engagement]:::ai
+  N7 -->|Engaged| N8[Update DB<br>Status=Warm Lead]:::db
+  N8 --> N9[Forward to Warm Workflow]:::integration
+  N7 -->|No Response| N10[Update DB<br>Status=Closed Lost]:::db
+
+classDef trigger fill:#fff2cc,stroke:#d6b656,stroke-width:1px,color:#000;
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef integration fill:#e1d5e7,stroke:#9673a6,stroke-width:1px,color:#000;
+classDef wait fill:#cccccc,stroke:#666,stroke-width:1px,color:#000;
+classDef db fill:#e6f7ff,stroke:#0099cc,stroke-width:1px,color:#000;
