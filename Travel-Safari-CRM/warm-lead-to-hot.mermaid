@@ -1,0 +1,19 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 80, 'nodeSpacing': 40 }}}%%
+flowchart TD
+  START[Trigger<br>Lead Classified as Warm]:::trigger --> N1[Generate Itinerary/Quote<br>From Packages DB]:::integration
+  N1 --> N2[Send Quote via SMS/WhatsApp]:::ai
+  N2 --> N3[Save Message in DB<br>Status=Quote Sent]:::db
+  N3 --> N4[Wait 48h SLA Timer]:::wait
+  N4 --> N5[Check for Reply]:::ai
+  N5 -->|Replied| N6[Save Reply in DB<br>Status=Engaged]:::db
+  N6 --> N7[Forward to Hot Path Workflow]:::integration
+  N5 -->|No Reply| N8[Send Automated Reminder<br>AI SMS/Call]:::ai
+  N8 --> N9[Save Reminder in DB<br>Status=Follow Up]:::db
+  N9 --> N4
+  N5 -->|Still No Reply| N10[Update DB<br>Status=Closed Lost]:::db
+
+classDef trigger fill:#fff2cc,stroke:#d6b656,stroke-width:1px,color:#000;
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef integration fill:#e1d5e7,stroke:#9673a6,stroke-width:1px,color:#000;
+classDef wait fill:#cccccc,stroke:#666,stroke-width:1px,color:#000;
+classDef db fill:#e6f7ff,stroke:#0099cc,stroke-width:1px,color:#000;
