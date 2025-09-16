@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor US as User
+    participant IN as Invoice
+    participant PA as Payment
+    participant WB as Web browser
+    participant TBG as Takaful Bazaar gateway
+    participant PFG as Payfast Gateway
+    US-->PFG: <br />CHEQUE PAYMENT
+    US->>IN: Create Invoice
+    US->>PA: Initiate Cheque Payment
+    PA-->>TBG: Get payment process
+    TBG-->>US: Payment response from gatewat no callback
+    US->>PA: <br />Update payment status
+    US-->PFG: <br /><br /><br />PAYFAST PAYMENT
+    US->>IN: <br /><br />Create Invoice
+    US->>PA: Initiate Online payment
+    PA-->>PFG: Get payment payload from Payfast Provider
+    PFG-->>US: Return redirect url to user
+    US->>WB: Post the URL on web
+    WB-->>PFG: Redirect to Payfast Site
+    PFG-->>WB: On payment return to TB Website
+    PFG-->>PA: Update payment on callback
+    US->>PA: Update Status

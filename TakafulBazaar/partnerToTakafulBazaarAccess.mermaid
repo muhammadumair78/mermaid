@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant C as Cache
+    participant EP as External<br>Partner
+    participant IM as Takaful Bazaar<br>Identity Module
+    participant PM as Takaful Bazaar<br>Partner Module
+    EP->>C: Check if token available in cache.
+    Note over EP: Create HMAC hash using secrect and message<br>from Takaful Bazaar<br>if token not present in cache
+    EP->>IM: Request authentication using the hash
+    Note over IM: Verify hash
+    IM->>PM: get TB partner and partner user
+    Note over IM: Add user info in JWT token
+    IM->>EP: Return token to external partner
+    EP->>C: Store authentication token from Takaful Bazaar in cache
+    EP->>IM: Make Api request by setting token in authorization header

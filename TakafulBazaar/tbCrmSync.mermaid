@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant TB as Takaful Bazaar
+    participant SQS as AWS SQS Fifo
+    participant LF as AWS Lambda
+    participant CRM as ODOO CRM
+    participant RC as Redis Cache
+    TB->>SQS: Event from TB on new LEAD create.
+    SQS->>LF: Trigger Lambda function to sync lead to CRM.
+    LF->>RC: Get CRM authentication token from redis
+    Note over LF: Create HMAC using secrect and message<br>from CRM<br>if token not received from cache
+    LF->>CRM: Request authentication using the HMAC
+    LF->>RC: Store authentication token from CRM in redis cache
+    LF->>CRM: Sync lead from TB to CRM
