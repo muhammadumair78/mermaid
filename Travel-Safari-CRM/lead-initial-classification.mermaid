@@ -1,0 +1,15 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 80, 'nodeSpacing': 40 }}}%%
+flowchart TD
+  START[Webhook Trigger<br>New SMS or WhatsApp]:::trigger --> N1[Save Message in DB<br>Type=Incoming]:::db
+  N1 --> N2[AI Classification via Flowise<br>Lead vs Query vs Spam]:::ai
+  N2 -->|Lead| N3[Set Status=New Lead<br>Insert into Inquiries DB]:::db
+  N2 -->|Query| N4[Create Ticket<br>CRM Helpdesk API]:::integration
+  N2 -->|Spam| N5[Discard Message<br>No DB record]:::lost
+  N2 -->|Low Confidence| N6[Assign Human Review Task<br>Send to Agent Queue]:::human
+
+classDef trigger fill:#fff2cc,stroke:#d6b656,stroke-width:1px,color:#000;
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef human fill:#ffe6b3,stroke:#e67e00,stroke-width:1px,color:#000;
+classDef db fill:#e6f7ff,stroke:#0099cc,stroke-width:1px,color:#000;
+classDef integration fill:#e1d5e7,stroke:#9673a6,stroke-width:1px,color:#000;
+classDef lost fill:#f8d4d4,stroke:#e02c2c,stroke-width:1px,color:#000;
