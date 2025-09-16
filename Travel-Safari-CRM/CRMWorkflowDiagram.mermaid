@@ -1,0 +1,51 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 100, 'nodeSpacing': 50 }}}%%
+flowchart LR
+  %% Entry
+  A1[New Message Inquiry<br>SMS or WhatsApp]:::ai --> A2[AI Agent n8n plus Flowise<br>Initial classification<br>Lead vs Query vs Garbage]:::ai
+
+  %% Classification paths
+  A2 -- Lead Detected --> B1{Lead Intent Detected?}:::ai
+  A2 -- Query or Support --> Q1[Forward to Support Workflow<br>Create Ticket in CRM or Helpdesk]:::human
+  A2 -- Garbage or Spam --> D1[Dropped<br>No CRM record created]:::lost
+
+  %% Qualification
+  B1 -- Yes --> B2[AI Classifies Lead Score<br>Hot Warm Cold]:::ai
+  B1 -- No --> C1[Ask More Info<br>AI clarification loop<br>Collect destination dates budget]:::ai
+
+  %% Clarification Loop Paths
+  C1 -- Info Provided --> B1
+  C1 -- No Response after retries --> C3[Mark as Lost<br>No response during clarification]:::lost
+
+  %% Hot Path
+  B2 -- Hot --> H1[Fast Track Pipeline<br>Assign to Agent plus AI Assist]:::human
+  H1 --> H2[Payment Link Generated<br>Stripe or PayPal integration]:::ai
+  H2 --> H3{Payment Completed?}:::ai
+  H3 -- Yes --> H4[Converted<br>Inquiry to Booking Confirmed<br>Invoice and Receipt sent]:::success
+  H3 -- No --> H5[Reminder and Follow Up<br>AI SMS or Call via VAPI.ai<br>Optional Agent Check In]:::ai
+  H5 --> H3
+
+  %% Warm Path
+  B2 -- Warm --> W1[Package Shared<br>AI sends tailored itinerary or quote<br>Based on CRM packages DB]:::ai
+  W1 --> W2[Awaiting Response<br>24 to 48 hour SLA Timer Starts]:::ai
+  W2 --> W3{Customer Responded?}:::ai
+  W3 -- Yes --> H1
+  W3 -- No --> W4[Automated Follow Up<br>AI outbound via n8n and VAPI.ai<br>First Reminder then Second Reminder]:::ai
+  W4 --> W2
+  W3 -- Still No --> C3
+
+  %% Cold Path
+  B2 -- Cold --> C2[Nurture Campaign<br>AI Drip emails or SMS plus Discounts<br>Three to four touches over weeks]:::ai
+  C2 --> C3[Eventually Closed<br>No conversion despite nurturing]:::lost
+
+  %% Closed States
+  C3 --> Z1[Closed Lost<br>No Response or Declined or Spam]:::lost
+  H4 --> Z2[Closed Won or Booked<br>Moved to Active Customer CRM]:::success
+
+  %% AI/Human Collaboration
+  A2 -. Low Confidence .-> AG1[Human Agent Assist<br>Manual qualification and response]:::human
+  AG1 --> B1
+
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef human fill:#ffe6b3,stroke:#e67e00,stroke-width:1px,color:#000;
+classDef success fill:#d4f8d4,stroke:#33a02c,stroke-width:1px,color:#000;
+classDef lost fill:#f8d4d4,stroke:#e02c2c,stroke-width:1px,color:#000;
