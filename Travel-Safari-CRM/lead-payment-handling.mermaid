@@ -1,0 +1,18 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 80, 'nodeSpacing': 40 }}}%%
+flowchart TD
+  START[Trigger<br>Lead Assigned as Hot]:::trigger --> N1[Generate Payment Link<br>Stripe/PayPal API]:::integration
+  N1 --> N2[Send Payment Link to Customer<br>via SMS/WhatsApp]:::ai
+  N2 --> N3[Save Outgoing Message in DB]:::db
+  N3 --> N4[Wait for Webhook<br>Payment Gateway Callback]:::wait
+  N4 -->|Payment Success| N5[Update Inquiry Status=Converted]:::db
+  N5 --> N6[Send Confirmation + Invoice]:::ai
+  N6 --> N7[Save Message in DB]:::db
+  N4 -->|Payment Failed or Timeout| N8[Send Reminder via AI<br>SMS/Call using VAPI.ai]:::ai
+  N8 --> N9[Save Reminder in DB<br>Status=Follow Up]:::db
+  N9 --> N4
+
+classDef trigger fill:#fff2cc,stroke:#d6b656,stroke-width:1px,color:#000;
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef integration fill:#e1d5e7,stroke:#9673a6,stroke-width:1px,color:#000;
+classDef wait fill:#cccccc,stroke:#666,stroke-width:1px,color:#000;
+classDef db fill:#e6f7ff,stroke:#0099cc,stroke-width:1px,color:#000;
