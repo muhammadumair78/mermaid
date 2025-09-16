@@ -1,0 +1,17 @@
+%%{ init: { 'flowchart': { 'rankSpacing': 80, 'nodeSpacing': 40 }}}%%
+flowchart TD
+  START[Trigger<br>Lead Missing Info]:::trigger --> N1[Send Clarification Message<br>AI asks destination, dates, budget]:::ai
+  N1 --> N2[Save Outgoing Message in DB]:::db
+  N2 --> N3[Wait Node<br>e.g., 24h for reply]:::wait
+  N3 --> N4[Check for Reply]:::ai
+  N4 -->|Info Provided| N5[Save Reply in DB<br>Update Inquiry Status=Qualified]:::db
+  N5 --> N6[Send Data to Main Workflow<br>Re-enter Lead Intent Check]:::integration
+  N4 -->|No Reply| N7[Retry up to 2-3 times<br>Automated Reminders]:::ai
+  N7 --> N3
+  N4 -->|Still No Response| N8[Update DB<br>Status=Lost Clarification]:::db
+
+classDef trigger fill:#fff2cc,stroke:#d6b656,stroke-width:1px,color:#000;
+classDef ai fill:#d9ebff,stroke:#4a90e2,stroke-width:1px,color:#000;
+classDef wait fill:#cccccc,stroke:#666,stroke-width:1px,color:#000;
+classDef db fill:#e6f7ff,stroke:#0099cc,stroke-width:1px,color:#000;
+classDef integration fill:#e1d5e7,stroke:#9673a6,stroke-width:1px,color:#000;
