@@ -1,68 +1,51 @@
 flowchart LR
-  %% Lanes with vertical stacking (each lane uses a vertical chain)
+  %% Lanes with vertical stacking
   subgraph L1 [New Inquiries]
     direction TB
-    N1[Unassigned \n New lead enters system]
-    N2[AI Processing\nAI reads and categorizes inquiry]
-    N3[Awaiting Review\nHuman validation if needed]
+    N1[New\nLead enters system]
+    N2[AI Processing\nAuto categorization]
+    N3[Awaiting Review\nManual validation]
   end
 
   subgraph L2 [Qualification]
     direction TB
-    Q1[Contacted - AI\nAI auto-reply sent]
-    Q2[Contacted - Human\nManual call or email]
+    Q1[Attempted Contact\nFirst outreach sent]
+    Q2[Contacted\nAI or human connected]
     Q3[Qualified\nLead is interested & relevant]
-    Q4[Disqualified\nNot a fit / spam / duplicate]
+    Q4[Unqualified\nNot a fit, spam, or duplicate]
   end
 
   subgraph L3 [Engagement]
     direction TB
-    E1[Awaiting Customer Reply\nLead has been contacted, waiting]
-    E2[Package Shared\nOffers / itineraries sent]
-    E3[Follow-Up Scheduled\nAI or human follow-up planned]
+    E1[Interested\nCustomer shows interest]
+    E2[Follow-Up Scheduled\nAI or human follow-up]
   end
 
   subgraph L4 [Proposal / Offer]
     direction TB
-    P1[Quote Sent\nQuotation prepared & sent]
-    P2[Awaiting Response\nCustomer has not responded yet]
-    P3[Negotiation\nPrice / terms under discussion]
+    P1[Proposal Sent\nQuote / itinerary shared]
+    P2[Negotiation\nDiscussion on price / terms]
   end
 
   subgraph L5 [Booking / Payment]
     direction TB
-    B1[Payment Link Sent\nCustomer received payment request]
-    B2[Awaiting Payment\nPayment pending]
-    B3[Partially Paid\nDeposit received]
-    B4[Paid Confirmed\nFull payment received]
+    B1[Converted / Won\nCustomer agreed to purchase]
   end
 
-  subgraph L6 [Post-Booking]
+  subgraph L6 [Closed]
     direction TB
-    PB1[Travel Docs Sent\nTickets, itineraries delivered]
-    PB2[Reminder Call Scheduled\nPre-travel check-in]
-    PB3[In Travel\nCustomer currently traveling]
-    PB4[Completed\nTrip finished successfully]
-    PB5[Support Request\nAfter-sales or in-travel support]
-  end
-
-  subgraph L7 [Closed]
-    direction TB
-    C1[Won\nSuccessful conversion]
-    C2[Lost\nCustomer declined or canceled]
+    C1[Converted / Won\nSuccessful booking]
+    C2[Lost / Closed\nCustomer declined or canceled]
     C3[No Response\nLead went silent]
   end
 
-  %% --- internal vertical edges (stacking inside each lane) ---
+  %% Internal vertical flow
   N1 --- N2 --- N3
   Q1 --- Q2 --- Q3 --- Q4
-  E1 --- E2 --- E3
-  P1 --- P2 --- P3
-  B1 --- B2 --- B3 --- B4
-  PB1 --- PB2 --- PB3 --- PB4 --- PB5
+  E1 --- E2
+  P1 --- P2
+  B1
   C1 --- C2 --- C3
 
-  %% Just force lane order left-to-right
-  L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
-
-
+  %% Horizontal flow
+  L1 --> L2 --> L3 --> L4 --> L5 --> L6
