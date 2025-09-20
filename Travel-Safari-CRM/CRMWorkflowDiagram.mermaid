@@ -1,7 +1,10 @@
 %%{ init: { 'flowchart': { 'rankSpacing': 100, 'nodeSpacing': 50 }}}%%
 flowchart TD
   %% Entry
-  A1[New Message Inquiry<br>SMS or WhatsApp]:::ai --> A2[AI Agent n8n plus Flowise<br>Initial classification<br>Lead vs Query vs Garbage]:::ai
+  A1[New Message Inquiry<br>SMS or WhatsApp]:::ai --> QX[Push Event to RabbitMQ Queue]:::ai
+  QX --> L1[Queue Listener<br>Processes Events Sequentially]:::ai
+  L1 --> A2[AI Agent n8n plus Flowise<br>Initial classification<br>Lead vs Query vs Garbage]:::ai
+  QX -->|Event Delay or Stuck| AL1[Alert Mechanism<br>Notify via Email/SMS/Slack]:::lost
 
   %% Classification paths
   A2 -- Lead Detected --> B1{Lead Intent Detected?}:::ai
